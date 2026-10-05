@@ -179,42 +179,50 @@ main{max-width:1510px;margin:0 auto;padding:22px 28px 28px}
 .board-legend{margin:0;padding:8px 10px;gap:4px 10px;background:transparent;border:1px dashed #b9ad8e;color:#51452c;font-size:10.5px;opacity:.75}
 .board-legend small{display:none}
 
-.ludo-board-shell{background:linear-gradient(145deg,#0b232b,#12303a 55%,#0b232b)!important;border:2px solid #c99a3b!important;border-bottom-width:6px!important}
-.ludo-board-shell:before{content:'CFO SNAKES & LADDERS'!important;background:#0b232b!important;color:#e0bd72!important;border-color:#c99a3b!important}
-.ludo-board{background:#0b232b!important;border:8px solid #0b232b!important;box-shadow:inset 0 0 0 2px #c99a3b,0 7px 16px rgba(0,0,0,.45)!important}
-.ludo-cell{background-image:none!important;color:#22343a!important;text-shadow:none!important;border:1px solid rgba(20,48,58,.18)!important}
-.ludo-cell:nth-child(4n+1){background-color:#f7f2e4!important}.ludo-cell:nth-child(4n+2){background-color:#ece4cc!important}
-.ludo-cell:nth-child(4n+3){background-color:#faf6ea!important}.ludo-cell:nth-child(4n){background-color:#e2d8bc!important}
-.ludo-cell.ladder-start{background-color:#d6ecdc!important}.ludo-cell.snake-start{background-color:#f6d9d5!important}
-.ludo-cell.chal{background-color:#4b2487!important;box-shadow:inset 0 0 0 2px #c9a7ff!important}
-.ludo-cell.pwr{background-color:#ffb703!important;box-shadow:inset 0 0 0 2px #7a4b00!important}
-.ludo-cell.start{background-color:#cfe6f2!important;box-shadow:inset 0 0 0 3px #1f6f78!important}
-.ludo-cell.finish{background-color:#f3dfa3!important;box-shadow:inset 0 0 0 3px #a8782d!important}
-.ludo-cell.chal .cell-num{color:#fff!important}.ludo-cell.pwr .cell-num{color:#1a1200!important}
-.ludo-cell.chal .cell-mark,.ludo-cell.pwr .cell-mark{position:absolute;left:0;right:0;top:0;bottom:0;display:grid;place-items:center;font-size:clamp(16px,2.6vw,28px);animation:markPulse 2s ease-in-out infinite}
-@keyframes markPulse{50%{transform:scale(1.14)}}
-.cell-num{opacity:.9!important}
-.ladder{stroke:#9a6a17!important;filter:drop-shadow(0 0 1px #3b2a0c) drop-shadow(1px 2px 1px rgba(0,0,0,.35))!important}
-.ladder-highlight,.ladder-rung-hi{stroke:#f2cf7c!important}.ladder-rung{stroke:#7d5412!important}
-.snake{stroke:#c23b32!important;filter:drop-shadow(0 0 1px #4a0f0b) drop-shadow(1px 2px 2px rgba(0,0,0,.4))!important;animation:none!important}
-.snake-inner{stroke:#f6b266!important;opacity:.9!important}.snake-head{stroke:#7a1f1a!important}
+.ludo-board-shell{background:linear-gradient(155deg,#0c232b 0%,#143844 55%,#0c232b 100%)!important;border:2px solid #b89248!important;border-bottom-width:5px!important;border-radius:12px!important;box-shadow:0 12px 28px rgba(0,0,0,.35)!important}
+.ludo-board-shell:before{content:'CFO SNAKES & LADDERS'!important;display:block!important;padding:2px 4px 8px!important;color:#deb868!important;font:700 12px/1 var(--sans)!important;letter-spacing:.14em!important;text-shadow:0 1px 2px rgba(0,0,0,.6)!important}
+.ludo-board{background:#faf8f5!important;border:6px solid #0c232b!important;border-radius:6px!important;box-shadow:inset 0 0 0 1px rgba(184,146,72,.4),0 8px 22px rgba(0,0,0,.3)!important}
+.ludo-cell{background-image:none!important;color:#33484f!important;text-shadow:none!important;border:1px solid rgba(20,48,58,.08)!important;transition:background-color .2s ease;position:relative}
+.ludo-cell:nth-child(2n+1){background-color:#faf8f5!important}
+.ludo-cell:nth-child(2n){background-color:#f1eee6!important}
+.ludo-cell.ladder-start{background-color:#eaf5ee!important}
+.ludo-cell.snake-start{background-color:#faeee9!important}
+.ludo-cell.start{background-color:#e1f1f0!important;box-shadow:inset 0 0 0 2px #1f6f78!important}
+.ludo-cell.finish{background-color:#fbf1d8!important;box-shadow:inset 0 0 0 2px #c99a3b!important}
+.ludo-cell .cell-num{position:absolute;left:4px;top:3px;font-family:var(--sans);font-size:clamp(8px,1.05vw,11.5px)!important;font-weight:600;color:#546970!important;opacity:.82!important;line-height:1}
+.ludo-cell.start .start-mark{position:absolute;left:0;right:0;bottom:3px;text-align:center;font:700 9px var(--sans);letter-spacing:.06em;color:#185a62}
+.ludo-cell.finish .finish-mark{position:absolute;left:0;right:0;bottom:3px;text-align:center;font:700 9px var(--sans);letter-spacing:.05em;color:#9b7222}
+
+/* Crisp, soothing Ladders */
+.ladder-rail{stroke:#b58838;stroke-width:0.55;stroke-linecap:round;opacity:.92}
+.ladder-rung{stroke:#cca450;stroke-width:0.48;stroke-linecap:round;opacity:.95}
+.ladder-cap{fill:#a67828;opacity:.85}
+
+/* Smooth, calming Snakes */
+.snake-body{stroke:#cf5e55;stroke-width:1.05;fill:none;stroke-linecap:round;opacity:.88}
+.snake-belly{stroke:#fde8df;stroke-width:0.36;fill:none;stroke-linecap:round;opacity:.92}
+.snake-head{fill:#ba463d}
+.snake-eye{fill:#ffffff}
+.snake-tail{fill:#c4534a}
+
+/* Tokens */
+.token{position:absolute;width:clamp(26px,3.8vw,38px);height:clamp(26px,3.8vw,38px);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;font:800 clamp(10px,1.2vw,13px) var(--sans);color:#fff;border:2.5px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,.35);transform:translate(-50%,-50%);transition:left .14s ease-out,top .14s ease-out}
+.token.user{background:linear-gradient(135deg,#1f727c,#134c53)!important}
+.token.bot{background:linear-gradient(135deg,#bd4642,#912925)!important}
 
 .card,.hud,.qpanel,.ludo-intro{background:linear-gradient(145deg,#f8f4e8,#ebe3cc)!important;border:1px solid #d3c9ad!important;color:#1c2b30!important;box-shadow:0 8px 22px rgba(0,0,0,.25)!important}
 .ludo-intro h2,.ludo-intro p,.card h2,.card h3,.card p{color:#1c2b30}.ludo-intro .mut,.card .mut{color:#4e5f64}
 .rule-cards>div{background:#fff!important;border:1px solid #d3c9ad!important;color:#1c2b30!important}.rule-cards small{color:#51636a!important}
 .ludo-result{background:linear-gradient(145deg,#0b232b,#12303a)!important;border:1px solid #c99a3b!important}.ludo-result h2{color:#f0d9a0}.ludo-result p{color:#e6eeee}
-.board-legend{background:#f8f4e8!important;border:1px solid #d3c9ad!important;color:#33454b!important;opacity:.9}
+.board-legend{display:flex!important;flex-wrap:wrap;gap:10px 18px;align-items:center;background:#faf8f4!important;border:1px solid #dcd3be!important;border-radius:8px;padding:8px 12px;color:#384d54!important;font-size:12px;opacity:1}
+.board-legend small{display:none}
 footer,footer a{color:#aebfc1}footer a{color:#e0bd72}
 
 /* Dice & Board Elements */
-.ludo-cell{position:relative}
-.ludo-cell .cell-num{position:absolute;left:4px;top:2px;font-size:clamp(8px,1.05vw,12px)!important;line-height:1}
-.ludo-cell .cell-mark{position:absolute;right:3px;bottom:2px;font-size:clamp(9px,1.2vw,14px)}
-.ludo-cell.start .start-mark,.ludo-cell.finish .finish-mark{position:absolute;left:0;right:0;bottom:3px;text-align:center}
-.lg{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px}
-.lg i{width:22px;height:22px;border-radius:5px;display:inline-grid;place-items:center;font-style:normal;font-size:13px}
-.l-lad i{background:#d6ecdc;border:2px solid #9a6a17}.l-snk i{background:#f6d9d5;border:2px solid #c23b32}.l-chal i{background:#4b2487}.l-pwr i{background:#ffb703}
-.board-legend{display:flex!important;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.lg{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px}
+.lg i{width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;font-style:normal;font-size:13px}
+.l-lad i{background:#eaf5ee;border:1.5px solid #b58838;color:#276f45}
+.l-snk i{background:#faeee9;border:1.5px solid #cf5e55;color:#b23d35}
 .dice-tray{position:relative;margin:clamp(8px,1.6vw,16px) auto -4px;width:clamp(200px,52%,360px);padding:10px 14px;background:linear-gradient(#21635a,#14413b);border:4px solid #6a3f1c;border-bottom:0;border-radius:22px 22px 0 0;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.45)}
 .die{width:clamp(40px,6vw,58px);aspect-ratio:1;background:linear-gradient(145deg,#fffdf4,#e0d9c4);border-radius:20%;box-shadow:0 4px 8px rgba(0,0,0,.55),inset 0 -3px 4px rgba(0,0,0,.18);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:15%;gap:6%}
 .die i{border-radius:50%}.die i.on{background:radial-gradient(circle at 35% 30%,#4a4a4a,#111)}
@@ -509,11 +517,10 @@ function obForm(){
 const RULES_HTML=`<div class="hl"><b>🎯 Goal:</b> be the <b>first to reach square 100</b> (the 👑 CFO's Office). Whoever gets there first, you or Alex, is hired as CFO.</div>
 <h3>🔁 Each turn</h3><ul><li><b>1.</b> A leadership statement appears. Rate it from <b>1 (Strongly disagree)</b> to <b>7 (Strongly agree)</b>. Click, or press keys 1 to 7.</li><li><b>2.</b> Tap the 🎲 dice to roll. You move the number you roll plus your rating bonus.</li><li><b>3.</b> Alex, your rival, takes a turn.</li></ul>
 <h3>📝 The statements</h3><ul><li>There are <b>20 statements</b> in 4 levels of 5. Answer honestly: ratings populate your research profile.</li><li><b>Fairness limit:</b> you may give a 7 on at most 4 statements and a 6 on at most 6 statements.</li></ul>
-<h3>🗺️ Special squares</h3><ul><li>🪜 <b>Ladders</b> carry you up. 🐍 <b>Snakes</b> bite and slide you down.</li><li>⚔️ <b>Finance Challenge:</b> a 10-second finance question (correct answer moves you 3 bonus squares).</li><li>✨ <b>Power-up:</b> gives you a random power card.</li></ul>`;
+<h3>🗺️ Special squares</h3><ul><li>🪜 <b>Ladders</b> carry you up. 🐍 <b>Snakes</b> bite and slide you down.</li></ul>`;
 
-const LUDO_SNAKES={62:19,47:26,16:6,87:24,32:8,57:18,33:7,30:9,67:46};
-const LUDO_LADDERS={80:96,71:91,31:68,50:92,77:96,79:98,21:61,76:94,69:93};
-const CHAL=[15,27,43,53,65,78,95],PWR=[10,25,48,58,63,73,97];
+const LUDO_SNAKES={38:15,53:32,70:49,86:64,98:79};
+const LUDO_LADDERS={4:25,12:47,35:65,51:72,76:95};
 
 function ludoAllQuestions(){
   return Q.flatMap((levelQuestions,li)=>levelQuestions.map((q,qi)=>({level:li+1,qid:li*5+qi+1,skill:LV[li][1],title:q[0],scenario:q[1],options:LIKERT})));
@@ -534,25 +541,71 @@ function renderLudoBoard(){
    for(let c=0;c<10;c++){
      const pos=leftToRight?row*10+c+1:row*10+(10-c);
      const isLadder=Object.prototype.hasOwnProperty.call(LUDO_LADDERS,pos);
-     const isSnake=Object.prototype.hasOwnProperty.call(LUDO_SNAKES,pos),isC=CHAL.includes(pos),isP=PWR.includes(pos);
-     const cls='ludo-cell'+(pos===1?' start':'')+(pos===100?' finish':'')+(isLadder?' ladder-start':'')+(isSnake?' snake-start':'')+(isC?' chal':'')+(isP?' pwr':'');
-     const mark=isLadder?'<span class="cell-mark">↗</span>':isSnake?'<span class="cell-mark">↘</span>':isC?'<span class="cell-mark">⚔️</span>':isP?'<span class="cell-mark">✨</span>':'';
+     const isSnake=Object.prototype.hasOwnProperty.call(LUDO_SNAKES,pos);
+     const cls='ludo-cell'+(pos===1?' start':'')+(pos===100?' finish':'')+(isLadder?' ladder-start':'')+(isSnake?' snake-start':'');
      const special=pos===1?'<span class="start-mark">START</span>':pos===100?'<span class="finish-mark">👑 HOME</span>':'';
-     cells.push(`<div class="${cls}" data-pos="${pos}"><span class="cell-num">${pos}</span>${mark}${special}</div>`);
+     cells.push(`<div class="${cls}" data-pos="${pos}"><span class="cell-num">${pos}</span>${special}</div>`);
    }
  }
  let svg=`<svg class="ludo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">`;
+ svg+=`<defs>
+   <filter id="ladderGlow" x="-20%" y="-20%" width="140%" height="140%">
+     <feDropShadow dx="0" dy="0.6" stdDeviation="0.5" flood-color="#4a300a" flood-opacity="0.2"/>
+   </filter>
+   <filter id="snakeGlow" x="-20%" y="-20%" width="140%" height="140%">
+     <feDropShadow dx="0" dy="0.8" stdDeviation="0.6" flood-color="#5a1812" flood-opacity="0.2"/>
+   </filter>
+ </defs>`;
+ 
  Object.entries(LUDO_LADDERS).forEach(([a,b])=>{
    const p1=boardPath(+a),p2=boardPath(+b);
-   svg+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="ladder"/>`;
+   const dx=p2.x-p1.x,dy=p2.y-p1.y;
+   const len=Math.hypot(dx,dy);
+   const nx=-dy/len,ny=dx/len;
+   const w=1.35;
+   const r1x1=(p1.x-nx*w).toFixed(2),r1y1=(p1.y-ny*w).toFixed(2);
+   const r1x2=(p2.x-nx*w).toFixed(2),r1y2=(p2.y-ny*w).toFixed(2);
+   const r2x1=(p1.x+nx*w).toFixed(2),r2y1=(p1.y+ny*w).toFixed(2);
+   const r2x2=(p2.x+nx*w).toFixed(2),r2y2=(p2.y+ny*w).toFixed(2);
+   let rungs='';
+   const count=Math.max(3,Math.floor(len/4.2));
+   for(let i=1;i<=count;i++){
+     const t=i/(count+1);
+     const cx=p1.x+dx*t,cy=p1.y+dy*t;
+     rungs+=`<line x1="${(cx-nx*w).toFixed(2)}" y1="${(cy-ny*w).toFixed(2)}" x2="${(cx+nx*w).toFixed(2)}" y2="${(cy+ny*w).toFixed(2)}" class="ladder-rung"/>`;
+   }
+   svg+=`<g class="ladder-item" filter="url(#ladderGlow)">
+     <line x1="${r1x1}" y1="${r1y1}" x2="${r1x2}" y2="${r1y2}" class="ladder-rail"/>
+     <line x1="${r2x1}" y1="${r2y1}" x2="${r2x2}" y2="${r2y2}" class="ladder-rail"/>
+     ${rungs}
+     <circle cx="${p1.x.toFixed(2)}" cy="${p1.y.toFixed(2)}" r="0.8" class="ladder-cap"/>
+     <circle cx="${p2.x.toFixed(2)}" cy="${p2.y.toFixed(2)}" r="0.8" class="ladder-cap"/>
+   </g>`;
  });
+ 
  Object.entries(LUDO_SNAKES).forEach(([a,b])=>{
    const p1=boardPath(+a),p2=boardPath(+b);
-   svg+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="snake"/>`;
+   const dx=p2.x-p1.x,dy=p2.y-p1.y;
+   const len=Math.hypot(dx,dy);
+   const nx=-dy/len,ny=dx/len;
+   const amp=Math.min(3.0,Math.max(1.6,len*0.08));
+   const c1x=(p1.x+dx*0.28+nx*amp).toFixed(2);
+   const c1y=(p1.y+dy*0.28+ny*amp).toFixed(2);
+   const c2x=(p1.x+dx*0.72-nx*amp).toFixed(2);
+   const c2y=(p1.y+dy*0.72-ny*amp).toFixed(2);
+   const d=`M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+   svg+=`<g class="snake-item" filter="url(#snakeGlow)">
+     <path d="${d}" class="snake-body"/>
+     <path d="${d}" class="snake-belly"/>
+     <circle cx="${p1.x.toFixed(2)}" cy="${p1.y.toFixed(2)}" r="1.35" class="snake-head"/>
+     <circle cx="${(p1.x-ny*0.42).toFixed(2)}" cy="${(p1.y+nx*0.42).toFixed(2)}" r="0.25" class="snake-eye"/>
+     <circle cx="${(p1.x+ny*0.42).toFixed(2)}" cy="${(p1.y-nx*0.42).toFixed(2)}" r="0.25" class="snake-eye"/>
+     <circle cx="${p2.x.toFixed(2)}" cy="${p2.y.toFixed(2)}" r="0.6" class="snake-tail"/>
+   </g>`;
  });
  svg+='</svg>';
  return `<div class="ludo-board-shell"><div class="ludo-board" id="ludoBoard"><div class="ludo-grid">${cells.join('')}</div>${svg}
-   <div class="token user" id="userToken" style="background:#1f6f78">YOU</div><div class="token bot" id="botToken" style="background:#b23b3b">ALEX</div></div><div class="dice-tray"><div class="die" id="dieFace"></div><div class="die-cap" id="dieCap">Answer to move</div></div></div>`;
+   <div class="token user" id="userToken">YOU</div><div class="token bot" id="botToken">ALEX</div></div><div class="dice-tray"><div class="die" id="dieFace"></div><div class="die-cap" id="dieCap">Answer to move</div></div></div>`;
 }
 
 function setToken(id,pos,offset){
@@ -634,7 +687,7 @@ function renderLudo(){
         <div><span>●</span><small>Your Position</small><b id="userPosSide">1</b></div>
         <div><span>●</span><small>Alex Position</small><b id="botPosSide">1</b></div>
       </div>
-      <div class="board-legend"><span class="lg l-lad"><i>↗</i>Ladder up</span><span class="lg l-snk"><i>↘</i>Snake down</span><span class="lg l-chal"><i>⚔️</i>Challenge</span><span class="lg l-pwr"><i>✨</i>Power-Up</span></div>
+      <div class="board-legend"><span class="lg l-lad"><i>🪜</i>Ladder (climb up)</span><span class="lg l-snk"><i>🐍</i>Snake (slide down)</span></div>
       <div class="side-footer"><span>Question <b id="qCountSide">1 of 20</b></span><div class="progress-mini"><i id="qProgress"></i></div><div id="moveLog">Rate the statement from 1 to 7.</div></div>
     </aside>
   </div>`,`Game 2: Ludo Survey`);
