@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CFO Leadership Journey — Handcrafted Snakes &amp; Ladders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--ink:#14303a;--paper:#eceeeb;--line:#d3d8d4;--teal:#1f6f78;--brass:#a9822f;--red:#b23b3b;--mut:#5b6b70}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:#1c2b30;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--ink);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--brass)}
+.top b{font:600 19px Georgia,serif}.top span{font-size:14px;opacity:.85}
+main{max-width:920px;margin:24px auto;padding:0 16px}
+footer{text-align:center;padding:20px;font-size:13px;color:var(--mut)}footer a{color:var(--mut);cursor:pointer}
+.card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:26px;margin-bottom:16px}
+h1,h2,h3{font-family:Georgia,serif;color:var(--ink);margin:0 0 10px}h1{font-size:30px}h2{font-size:23px}h3{font-size:18px}
+.lead{font-size:18px;color:#33464c;max-width:62ch}.mut{color:var(--mut);font-size:14px}
+label{display:block;font-weight:600;margin:14px 0 4px;font-size:14px}
+input[type=text],select{width:100%;padding:10px 12px;border:1px solid #b9c1bd;border-radius:4px;font:inherit;background:#fff}
+button,.btn{background:var(--teal);color:#fff;border:0;border-radius:4px;padding:11px 20px;font:600 15px system-ui,sans-serif;cursor:pointer;margin:6px 8px 0 0}
+button:hover{background:#185860}button.alt{background:#fff;color:var(--ink);border:1px solid #9aa6a2}button.alt:hover{background:#f1f3f1}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brass);outline-offset:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.arch{background:#fff;color:#1c2b30;border:1px solid var(--line);text-align:left;padding:16px;margin:0;font-weight:400;border-top:4px solid var(--brass)}
+.arch:hover{background:#f6f3ea}.arch b{display:block;font:600 17px Georgia,serif;color:var(--ink)}.arch small{display:block;margin-top:6px}
+.hud{display:flex;flex-wrap:wrap;gap:8px 22px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px 16px;margin-bottom:10px;font-size:14px}
+.hud b{font-variant-numeric:tabular-nums}.hud span:first-child{font-weight:600;color:var(--ink);flex:1}
+.arena{position:relative;height:400px;background:#10262e;border-radius:6px;overflow:hidden;border-bottom:4px solid var(--brass)}
+.arena.miss{box-shadow:inset 0 0 0 3px var(--red)}
+.bx{position:absolute;padding:6px 12px;border-radius:4px;color:#fff;font:600 18px ui-monospace,Consolas,monospace;background:var(--teal);white-space:nowrap;will-change:transform}
+.bx.m{background:var(--brass)}.bx.pop{opacity:0;transition:opacity .2s}
+input.big{width:100%;margin-top:10px;padding:14px;font-size:20px;border:2px solid var(--ink);border-radius:4px}input.big.err{border-color:var(--red)}
+.scale{display:flex;gap:6px;flex-wrap:wrap}.scale label{margin:0;font-weight:400}
+.scale input{position:absolute;opacity:0}.scale span{display:inline-block;min-width:44px;text-align:center;padding:9px 0;border:1px solid #9aa6a2;border-radius:4px;cursor:pointer}
+.scale input:checked+span{background:var(--ink);color:#fff}.scale input:focus-visible+span{outline:3px solid var(--brass)}
+.stagebox{display:flex;justify-content:center;background:#10262e;border-radius:6px;padding:8px}
+canvas{max-width:100%;height:auto;touch-action:none;cursor:crosshair;background:#f4f5f2;border-radius:4px}
+.meter{height:8px;background:#dfe4e1;border-radius:4px;overflow:hidden;margin:0 0 10px}.meter i{display:block;height:100%;width:50%;background:var(--brass);transition:width .3s}
+.tray{margin-top:10px;min-height:44px}.pw{background:#fff;color:var(--ink);border:1px solid var(--brass);padding:8px 12px;font-size:14px}.pw b{background:var(--brass);color:#fff;border-radius:50%;display:inline-block;width:22px;text-align:center;margin-right:4px}
+#md{display:none;position:fixed;inset:0;background:rgba(10,25,30,.7);align-items:center;justify-content:center;padding:16px;z-index:99999}
+.mbox{background:#fff;border-radius:8px;max-width:620px;width:100%;max-height:92vh;overflow:auto;padding:26px;border-top:5px solid var(--brass);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+.opt{display:block;width:100%;text-align:left;background:#fff;color:#1c2b30;border:1px solid #9aa6a2;font-weight:400;margin:8px 0 0;padding:12px 14px}.opt:hover{background:#f1f5f4}
+.good{color:var(--teal)}.bad{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.stat{border:1px solid var(--line);padding:14px;text-align:center}.stat b{display:block;font:600 30px Georgia,serif;color:var(--ink)}
+.bar{margin:10px 0}.bar div{height:12px;background:#dfe4e1;border-radius:3px}.bar i{display:block;height:100%;background:var(--teal);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}.scroll{overflow-x:auto}
+.qpanel{background:#fff;border:1px solid var(--line);border-top:4px solid var(--brass);border-radius:6px;padding:16px 20px;margin-bottom:10px}.qpanel h3{margin:2px 0 4px}.qpanel p{margin:4px 0}
+.top{background:linear-gradient(90deg,#0b1f26,#1d4d58)}.top b{display:flex;align-items:center;gap:10px}
+.logo{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f2d68a,#a9822f 60%,#6b4f16);box-shadow:0 0 0 3px rgba(255,255,255,.15)}
+.hdr-r{display:flex;align-items:center;gap:12px}#snd{margin:0;padding:6px 12px;font-size:13px;background:transparent;border:1px solid rgba(255,255,255,.45)}
+.stepbar{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}.stepbar:empty{display:none}
+.st{font-size:13px;padding:4px 12px;border-radius:99px;background:#eef1ef;color:#5b6b70}.st.on{background:var(--ink);color:#fff}.st.done{background:#d7ebe9;color:#185860}
+#app>*{animation:fin .4s both}@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#0d2830 0%,#1f6f78 100%);color:#fff;border-radius:12px;padding:38px 34px;margin-bottom:16px;box-shadow:0 10px 30px rgba(20,48,58,.25)}
+.hero h1{color:#fff;font-size:38px;line-height:1.15;max-width:14em;position:relative}.hero .lead{color:#dcebe9;position:relative}
+.kick{display:inline-block;background:rgba(255,255,255,.15);border-radius:99px;padding:3px 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;position:relative}
+.hero i{position:absolute;border-radius:50%;opacity:.5;animation:flt 7s ease-in-out infinite}@keyframes flt{50%{transform:translateY(-14px)}}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:18px;position:relative}
+.feats div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:12px 14px;font-size:14px}.feats b{display:block;font:600 16px Georgia,serif;color:#f2d68a}
+
+:root{--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
+body{font-family:var(--sans);background:linear-gradient(180deg,#e6ecea 0,#f3f5f4 380px)}
+h1,h2,h3,.top b,.stat b,.feats b{font-family:var(--serif)}button{font-family:var(--sans);border-radius:8px;box-shadow:0 2px 0 rgba(0,0,0,.18);transition:transform .12s,background .12s}button:hover{transform:translateY(-1px)}button:active{transform:translateY(1px)}
+.card,.hud,.qpanel{box-shadow:0 2px 10px rgba(20,48,58,.07)}.hud{border-left:4px solid var(--brass)}
+input[type=text],select{border-radius:8px}
+
+.game-kicker{font:800 12px var(--sans);letter-spacing:.14em;color:#a9822f;margin-bottom:8px}.ludo-intro h2{font-size:clamp(28px,4vw,44px);margin-bottom:8px}.rule-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.rule-cards>div{padding:15px;border:1px solid rgba(20,48,58,.12);border-radius:12px;background:linear-gradient(145deg,#fff,#f1f5f2);display:grid;gap:4px}.rule-cards span{font-size:25px}.rule-cards b{font:800 13px var(--sans)}.rule-cards small{color:#61747a;line-height:1.35}
+.ludo-wrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(270px,1fr);gap:14px;align-items:stretch}
+.ludo-board-shell{background:#10262e;border-radius:12px;padding:12px;border-bottom:4px solid var(--brass);box-shadow:0 8px 24px rgba(20,48,58,.18)}
+.ludo-board{position:relative;aspect-ratio:1/1;width:100%;max-height:calc(100vh - 160px);margin:auto;background:#f5f6f2;border-radius:8px;overflow:hidden;border:3px solid #14303a}
+.ludo-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr);z-index:1}
+.ludo-cell{position:relative;border:1px solid rgba(20,48,58,.18);display:flex;align-items:flex-start;justify-content:flex-start;padding:3px;font:700 clamp(8px,1.1vw,13px) var(--sans);color:#27434a}
+.ludo-cell .cell-num{opacity:.72}
+.ludo-svg{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.token{position:absolute;width:clamp(24px,4vw,42px);height:clamp(24px,4vw,42px);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;font:800 clamp(11px,1.4vw,16px) var(--serif);color:#fff;border:3px solid #fff;box-shadow:0 4px 9px rgba(0,0,0,.3);transform:translate(-50%,-50%);transition:left .12s linear,top .12s linear}
+.ludo-side{background:#fff;border:1px solid var(--line);border-top:4px solid var(--brass);border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(20,48,58,.07);min-width:0}
+.player-card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:#f7f9f8}
+.player-card.active{outline:3px solid rgba(169,130,47,.35);border-color:var(--brass)}
+.player-row{display:flex;justify-content:space-between;gap:8px;align-items:center}.player-name{font-weight:700}.player-pos{font:700 22px var(--serif);color:var(--ink)}
+.question-box{margin-top:12px;padding:12px;border-radius:8px;background:linear-gradient(135deg,#0d2830,#1f6f78);color:#fff}
+.question-box h3{color:#fff;font-size:18px;margin:0 0 6px}.question-box p{margin:4px 0;color:#dcebe9;font-size:13px}
+.q-number{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#f2d68a;font-weight:700}
+.ludo-options{display:grid;gap:7px;margin-top:10px}
+.ludo-opt{width:100%;margin:0;text-align:left;background:#fff;color:#1c2b30;border:1px solid #9aa6a2;padding:10px 11px;font-weight:600;font-size:13px;box-shadow:none}
+.ludo-opt:hover{background:#eef5f3;transform:none}.ludo-opt:disabled{opacity:1;cursor:default}.ludo-opt.correct{border-color:#2e9a6a;background:#e7f5ef}.ludo-opt.wrong{border-color:#b23b3b;background:#fae9e9}
+.move-log{margin-top:10px;padding:9px 10px;background:#f4f6f5;border-radius:8px;font-size:12px;min-height:42px}
+.move-log b{color:var(--ink)}.progress-mini{height:7px;background:#dfe4e1;border-radius:99px;overflow:hidden;margin:8px 0}.progress-mini i{display:block;height:100%;background:linear-gradient(90deg,#1f6f78,#a9822f);width:0;transition:width .3s}
+.ludo-result{padding:14px;border-radius:10px;background:linear-gradient(135deg,#0d2830,#1f6f78);color:#fff}.ludo-result h2{color:#f2d68a}.ludo-result p{color:#dcebe9}
+
+/* Executive Boardroom Styles */
+:root{
+  --navy:#071d26;--navy2:#102f39;--gold:#c99a3b;--gold2:#e0bd72;
+  --paper:#f2e6cc;--paper2:#e6d1a8;--wood:#3b2114;--wood2:#6d4527;
+  --line:#8f6a43;--text:#1b2630;--muted:#667078;
+}
+body{background:radial-gradient(circle at 8% 8%,rgba(255,255,255,.08),transparent 20%),linear-gradient(135deg,#161313,#25211d 45%,#0e1112);color:var(--text);min-height:100vh}
+.top{height:92px;padding:0 42px;background:linear-gradient(90deg,#071a22,#0c2731 55%,#071a22);border-bottom:3px solid #9d6f29;box-shadow:0 6px 22px rgba(0,0,0,.45);display:flex;align-items:center;gap:30px}
+.brand{display:flex;align-items:center;gap:18px;min-width:510px}
+.brand-cfo{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f4ead7;font:700 37px/1 Georgia,serif;letter-spacing:-.04em}
+.brand-cfo .crown{position:absolute;top:-12px;color:#d9aa42;font:700 20px/1 Georgia,serif}
+.brand-divider{height:56px;width:1px;background:#c59645}
+.brand-title strong{display:block;color:#f2e7d3;font:600 30px/1.1 Georgia,serif}
+.brand-title div{margin-top:10px;color:#d4a344;font:700 11px/1 var(--sans);letter-spacing:.2em}
+.brand-title i{font-style:normal;color:#8b7040;padding:0 8px}
+.header-center{margin-left:auto;color:#eee2ce;font:italic 16px/1.35 Georgia,serif;text-align:left;opacity:.9}
+.hdr-r{display:flex;align-items:center;gap:16px;color:#f0e4d0}
+.welcome-user{display:flex;align-items:center;gap:10px;padding-left:18px;border-left:1px solid #7e643d;font:15px Georgia,serif;white-space:nowrap}
+.user-icon{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#0d2630;background:#eadfca;font-size:12px}
+main{max-width:1510px;margin:0 auto;padding:22px 28px 28px}
+.game-shell{display:grid;grid-template-columns:minmax(0,1.78fr) minmax(440px,.92fr);gap:20px;align-items:start}
+.board-column{min-width:0}
+.board-heading{display:flex;align-items:end;justify-content:space-between;margin:0 4px 10px;color:#ead7b5}
+.board-heading h1{margin:0;color:#f1dfbd;font:600 31px/1 Georgia,serif}
+.board-heading-note{font:italic 14px Georgia,serif;color:#cbb994;padding-bottom:6px}
+.ludo-board-shell{padding:17px;background:linear-gradient(145deg,#24140d,#5a361e 35%,#2b180e);border:2px solid #b47d3c;border-radius:10px;box-shadow:0 18px 42px rgba(0,0,0,.5),inset 0 1px rgba(255,226,181,.32)}
+.ludo-board{border:8px solid #442615;border-radius:4px;background:#d6b078;box-shadow:inset 0 0 0 2px #efcf91,inset 0 0 30px rgba(70,38,17,.28),0 7px 14px rgba(0,0,0,.45)}
+.ludo-cell{font-family:Georgia,"Times New Roman",serif;color:#3a2516;border-color:rgba(75,45,22,.3);font-weight:700;padding:5px}
+.ludo-cell:nth-child(4n+1){background:#f1ddb2}.ludo-cell:nth-child(4n+2){background:#e4c795}.ludo-cell:nth-child(4n+3){background:#f6e6c4}.ludo-cell:nth-child(4n){background:#d8b57a}
+.ludo-cell.start{box-shadow:inset 0 0 0 3px #0d4f64,inset 0 0 0 5px rgba(255,226,161,.5)}
+.ludo-cell.finish{box-shadow:inset 0 0 0 3px #a8782d,inset 0 0 0 5px rgba(255,226,161,.45)}
+.ludo-side{padding:0;background:transparent;border:0;box-shadow:none;color:#1e2930;min-width:0}
+.players-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:linear-gradient(145deg,#102d37,#071c24);padding:16px;border:1px solid #53666b;border-radius:10px 10px 0 0;box-shadow:0 10px 22px rgba(0,0,0,.32)}
+.professional-side .player-card{margin:0;padding:13px 12px;display:flex;align-items:center;gap:11px;border:1px solid #607177;border-radius:8px;background:rgba(5,20,26,.5);color:#fff}
+.professional-side .player-card.active{outline:2px solid rgba(48,171,226,.55);border-color:#2997c7}
+.avatar{flex:0 0 42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.45);font-size:0}
+.player-info{min-width:0;flex:1}.player-info strong{display:block;font:600 17px Georgia,serif;color:#f2e8d6}.player-info span{display:block;color:#b7ccd1;font-size:12px;margin:2px 0 7px}.player-info small{color:#dce4e5;font-size:11px}
+.challenge-card{position:relative;background:linear-gradient(145deg,#f4e7ca,#dfc79b);border:1px solid #b89361;border-radius:0 0 9px 9px;padding:20px 22px;box-shadow:0 12px 26px rgba(0,0,0,.32)}
+.challenge-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(93,61,27,.24);padding-bottom:14px;margin-bottom:14px}
+.challenge-icon{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#6b2b8a,#3e1959);color:#f0ddf8;border:1px solid #a17bb7;font-size:24px}
+.challenge-head div{flex:1}.challenge-head span{display:block;color:#4c2c20;font:700 13px var(--sans);letter-spacing:.05em}.challenge-head small{float:right;color:#4b3826;font:600 12px var(--sans)}
+.challenge-card h2{margin:0 0 10px;color:#30203c;font:600 24px/1.2 Georgia,serif}
+.challenge-card p{margin:0;color:#263747;font:15px/1.6 Georgia,serif}
+.challenge-rule{height:1px;background:rgba(76,52,28,.24);margin:15px 0 13px}
+.question-prompt{font-weight:700;font-size:13px;color:#1e2c39;margin-bottom:9px}
+.professional-side .ludo-options{gap:0;border:1px solid #c8b18b;border-radius:9px;overflow:hidden;margin:0}
+.professional-side .ludo-opt{position:relative;margin:0;padding:12px 14px;border:0;border-bottom:1px solid #c8b18b;border-radius:0;background:rgba(255,250,239,.45);font-size:13px;line-height:1.45;color:#1c2b3a;box-shadow:none}
+.submit-row{min-height:22px;margin-top:8px;color:#76552a;font-size:12px}
+.game-status{display:grid;grid-template-columns:repeat(4,1fr);background:#0c252e;border:1px solid #4c6267;border-radius:8px;margin-top:10px;color:#eee3cf;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.game-status>div{position:relative;min-height:82px;padding:10px 8px;text-align:center;border-right:1px solid #41565b}.game-status>div:last-child{border-right:0}
+.game-status span{display:block;font-size:19px;color:#cba052;margin-bottom:3px}.game-status small{display:block;color:#aebfc1;font-size:10px}.game-status b{display:block;color:#fff0cf;font:600 22px Georgia,serif;margin-top:1px}.game-status em{display:block;font-style:normal;font-size:9px;color:#95a9ac}
+.board-legend{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:13px 14px;background:#ead4a8;border:1px solid #9c7548;border-radius:8px;margin-top:9px;color:#4b3420;font-size:11px}
+.board-legend span{display:flex;gap:5px;align-items:center}.board-legend small{color:#725b3f}
+.side-footer{margin-top:9px;padding:10px 13px;background:rgba(10,28,34,.92);border:1px solid #485c60;border-radius:7px;color:#d8c6a5;font-size:11px}.side-footer .progress-mini{margin:7px 0 5px}.side-footer #moveLog{color:#b5c2c4}
+.progress-mini{height:5px;background:#30464c}.progress-mini i{background:linear-gradient(90deg,#2e9fd0,#d09b3f)}
+
+/* Color System & UI */
+:root{--h-bg:#0b232b;--h-sf:#12303a;--h-ln:#2c4850;--h-tx:#eef2f1;--h-mu:#9fb4b9;--h-ac:#d4a84f;--h-you:#3fb6e0;--h-alex:#d97aa9;--h-good:#4fb286;--h-bad:#e0675f;--h-paper:#fbf8f1}
+.game-shell{grid-template-columns:minmax(0,1fr) clamp(340px,31vw,430px);gap:22px}
+.ludo-side{display:flex;flex-direction:column;gap:10px;position:sticky;top:12px;align-self:start;max-height:calc(100vh - 24px);overflow:auto;scrollbar-width:thin}
+.players-panel{order:1;padding:10px;gap:8px;border-radius:12px;background:var(--h-bg);border:1px solid var(--h-ln);box-shadow:none}
+.challenge-card{order:2}.game-status{order:3}.side-footer{order:4}.board-legend{order:5}
+.professional-side .player-card{padding:8px 10px;gap:9px;background:var(--h-sf);border:1px solid var(--h-ln);border-radius:9px;opacity:.7;transition:opacity .25s,border-color .25s,box-shadow .25s}
+.professional-side .player-card.active{opacity:1;outline:0;border-color:var(--h-you);box-shadow:0 0 0 3px rgba(63,182,224,.18)}
+.professional-side .player-card:nth-child(2).active{border-color:var(--h-alex);box-shadow:0 0 0 3px rgba(217,122,169,.2)}
+.avatar{flex:0 0 32px;height:32px}
+.player-info strong{font:600 14px var(--sans);color:var(--h-tx)}
+.player-info span{font-size:11px;margin:0 0 4px;color:var(--h-mu)}
+.player-info small{font:600 11px var(--sans);color:var(--h-tx);font-variant-numeric:tabular-nums;position:relative;display:block}
+.challenge-card{background:var(--h-paper);border:1px solid #d8cfb8;border-top:3px solid var(--h-ac);border-radius:12px;padding:16px 18px;box-shadow:0 8px 22px rgba(0,0,0,.22);transition:opacity .3s,filter .3s}
+.challenge-head{padding-bottom:10px;margin-bottom:10px}
+.challenge-icon{width:34px;height:34px;font-size:18px;background:var(--h-bg);border-color:var(--h-ln);color:var(--h-ac)}
+.challenge-head span{font:700 11px var(--sans);letter-spacing:.1em;color:#5a4a2a;text-transform:uppercase}
+.challenge-card h2{font:600 20px/1.25 Georgia,'Fraunces',serif;color:#1c2b30;margin-bottom:6px}
+.challenge-card p{font:15px/1.55 Georgia,serif;color:#2b3b40}
+.challenge-rule{margin:12px 0 10px}
+.question-prompt{font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#6a5a38}
+.professional-side .ludo-opt{min-height:46px;padding:11px 12px 11px 44px;font:14px/1.45 var(--sans);color:#1c2b30;text-align:left;transition:background .15s}
+.professional-side .ludo-opt b{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--h-bg);color:#fff;font:700 11px var(--sans)}
+.professional-side .ludo-opt:hover:not(:disabled){background:#f1e8d0}
+.professional-side .ludo-opt:focus-visible{outline:3px solid var(--h-you);outline-offset:-3px}
+.submit-row{color:#6a5a38;font:600 11px var(--sans)}
+.game-status{background:var(--h-bg);border:1px solid var(--h-ln);border-radius:10px;margin:0;box-shadow:none}
+.game-status>div{min-height:50px;padding:7px 4px;border-color:var(--h-ln)}
+.game-status span,.game-status em{display:none}
+.game-status small{font:600 9px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--h-mu)}
+.game-status b{font:700 17px var(--sans);font-variant-numeric:tabular-nums;color:var(--h-tx)}
+.side-footer{margin:0;background:var(--h-bg);border-color:var(--h-ln);border-radius:10px}
+.side-footer #moveLog{color:var(--h-tx);font-size:12px;line-height:1.45;margin-top:4px}
+.board-legend{margin:0;padding:8px 10px;gap:4px 10px;background:transparent;border:1px dashed #b9ad8e;color:#51452c;font-size:10.5px;opacity:.75}
+.board-legend small{display:none}
+
+.ludo-board-shell{background:linear-gradient(145deg,#0b232b,#12303a 55%,#0b232b)!important;border:2px solid #c99a3b!important;border-bottom-width:6px!important}
+.ludo-board-shell:before{content:'CFO SNAKES & LADDERS'!important;background:#0b232b!important;color:#e0bd72!important;border-color:#c99a3b!important}
+.ludo-board{background:#0b232b!important;border:8px solid #0b232b!important;box-shadow:inset 0 0 0 2px #c99a3b,0 7px 16px rgba(0,0,0,.45)!important}
+.ludo-cell{background-image:none!important;color:#22343a!important;text-shadow:none!important;border:1px solid rgba(20,48,58,.18)!important}
+.ludo-cell:nth-child(4n+1){background-color:#f7f2e4!important}.ludo-cell:nth-child(4n+2){background-color:#ece4cc!important}
+.ludo-cell:nth-child(4n+3){background-color:#faf6ea!important}.ludo-cell:nth-child(4n){background-color:#e2d8bc!important}
+.ludo-cell.ladder-start{background-color:#d6ecdc!important}.ludo-cell.snake-start{background-color:#f6d9d5!important}
+.ludo-cell.chal{background-color:#4b2487!important;box-shadow:inset 0 0 0 2px #c9a7ff!important}
+.ludo-cell.pwr{background-color:#ffb703!important;box-shadow:inset 0 0 0 2px #7a4b00!important}
+.ludo-cell.start{background-color:#cfe6f2!important;box-shadow:inset 0 0 0 3px #1f6f78!important}
+.ludo-cell.finish{background-color:#f3dfa3!important;box-shadow:inset 0 0 0 3px #a8782d!important}
+.ludo-cell.chal .cell-num{color:#fff!important}.ludo-cell.pwr .cell-num{color:#1a1200!important}
+.ludo-cell.chal .cell-mark,.ludo-cell.pwr .cell-mark{position:absolute;left:0;right:0;top:0;bottom:0;display:grid;place-items:center;font-size:clamp(16px,2.6vw,28px);animation:markPulse 2s ease-in-out infinite}
+@keyframes markPulse{50%{transform:scale(1.14)}}
+.cell-num{opacity:.9!important}
+.ladder{stroke:#9a6a17!important;filter:drop-shadow(0 0 1px #3b2a0c) drop-shadow(1px 2px 1px rgba(0,0,0,.35))!important}
+.ladder-highlight,.ladder-rung-hi{stroke:#f2cf7c!important}.ladder-rung{stroke:#7d5412!important}
+.snake{stroke:#c23b32!important;filter:drop-shadow(0 0 1px #4a0f0b) drop-shadow(1px 2px 2px rgba(0,0,0,.4))!important;animation:none!important}
+.snake-inner{stroke:#f6b266!important;opacity:.9!important}.snake-head{stroke:#7a1f1a!important}
+
+.card,.hud,.qpanel,.ludo-intro{background:linear-gradient(145deg,#f8f4e8,#ebe3cc)!important;border:1px solid #d3c9ad!important;color:#1c2b30!important;box-shadow:0 8px 22px rgba(0,0,0,.25)!important}
+.ludo-intro h2,.ludo-intro p,.card h2,.card h3,.card p{color:#1c2b30}.ludo-intro .mut,.card .mut{color:#4e5f64}
+.rule-cards>div{background:#fff!important;border:1px solid #d3c9ad!important;color:#1c2b30!important}.rule-cards small{color:#51636a!important}
+.ludo-result{background:linear-gradient(145deg,#0b232b,#12303a)!important;border:1px solid #c99a3b!important}.ludo-result h2{color:#f0d9a0}.ludo-result p{color:#e6eeee}
+.board-legend{background:#f8f4e8!important;border:1px solid #d3c9ad!important;color:#33454b!important;opacity:.9}
+footer,footer a{color:#aebfc1}footer a{color:#e0bd72}
+
+/* Dice & Board Elements */
+.ludo-cell{position:relative}
+.ludo-cell .cell-num{position:absolute;left:4px;top:2px;font-size:clamp(8px,1.05vw,12px)!important;line-height:1}
+.ludo-cell .cell-mark{position:absolute;right:3px;bottom:2px;font-size:clamp(9px,1.2vw,14px)}
+.ludo-cell.start .start-mark,.ludo-cell.finish .finish-mark{position:absolute;left:0;right:0;bottom:3px;text-align:center}
+.lg{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px}
+.lg i{width:22px;height:22px;border-radius:5px;display:inline-grid;place-items:center;font-style:normal;font-size:13px}
+.l-lad i{background:#d6ecdc;border:2px solid #9a6a17}.l-snk i{background:#f6d9d5;border:2px solid #c23b32}.l-chal i{background:#4b2487}.l-pwr i{background:#ffb703}
+.board-legend{display:flex!important;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.dice-tray{position:relative;margin:clamp(8px,1.6vw,16px) auto -4px;width:clamp(200px,52%,360px);padding:10px 14px;background:linear-gradient(#21635a,#14413b);border:4px solid #6a3f1c;border-bottom:0;border-radius:22px 22px 0 0;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.45)}
+.die{width:clamp(40px,6vw,58px);aspect-ratio:1;background:linear-gradient(145deg,#fffdf4,#e0d9c4);border-radius:20%;box-shadow:0 4px 8px rgba(0,0,0,.55),inset 0 -3px 4px rgba(0,0,0,.18);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:15%;gap:6%}
+.die i{border-radius:50%}.die i.on{background:radial-gradient(circle at 35% 30%,#4a4a4a,#111)}
+.die.roll{animation:dieRoll .7s cubic-bezier(.2,.8,.3,1)}
+@keyframes dieRoll{0%{transform:rotate(-220deg) scale(.55) translateY(-18px)}60%{transform:rotate(14deg) scale(1.12)}100%{transform:none}}
+.die-cap{color:#e9f3df;font:700 clamp(11px,1.3vw,14px) var(--sans);max-width:120px;line-height:1.3}
+
+/* Casino & Likert Scale 1-7 */
+.ludo-opt.likert{display:flex;align-items:center;gap:10px}.ludo-opt.likert b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}.ludo-opt.likert.sel{outline:3px solid var(--brass)}
+.ludo-opt.likert.capped{flex-direction:column;gap:0}
+.ludo-opt.likert small{display:block;font:600 10px var(--sans);opacity:.75;line-height:1.1;margin-top:1px}
+.ludo-opt.likert:disabled{opacity:.4;cursor:not-allowed}
+#ludoOptions.scale7{display:flex;flex-wrap:wrap;gap:6px}
+.professional-side #ludoOptions.scale7{border:0;overflow:visible}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert{flex:1 1 0;min-width:0;min-height:48px;padding:0;justify-content:center;border:1px solid #94633a;border-radius:10px;background:#fff8e6}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert b{position:static;transform:none;background:none;color:inherit;width:auto;height:auto;font:700 17px var(--sans)}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert.sel{background:#1c2b30;color:#fff}
+#ludoOptions.scale7 .tmr{flex-basis:100%}
+#ludoOptions.scale7::after{content:"1 = Strongly disagree  ·  7 = Strongly agree";flex-basis:100%;order:9;text-align:center;font:600 11px var(--sans);color:#6a5a38}
+.tmr{margin-top:8px;font-size:13px;font-weight:600;color:#6a5a38}.tmr i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,#ffb703,#e85d04);width:100%;margin-bottom:4px}
+
+.dice-ov{position:fixed;inset:0;z-index:9999;background:rgba(6,14,18,.62);display:flex;align-items:center;justify-content:center;transition:opacity .25s;animation:ovIn .2s}@keyframes ovIn{from{opacity:0}}
+.dice-stage{text-align:center;perspective:800px}.toss{animation:toss 1.35s ease-out both}
+@keyframes toss{0%{transform:translateY(160px) scale(.5)}30%{transform:translateY(-110px) scale(1.2)}55%{transform:translateY(0) scale(1)}70%{transform:translateY(-38px)}85%{transform:translateY(0)}92%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+.cube{width:140px;height:140px;position:relative;margin:0 auto;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.12,.7,.2,1)}
+.dface{position:absolute;inset:0;background:linear-gradient(145deg,#fffdf4,#ddd5bd);border:2px solid #c9bfa0;border-radius:18px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:22px;gap:9px;box-shadow:inset 0 -4px 8px rgba(0,0,0,.15)}
+.dface i{border-radius:50%}.dface i.on{background:radial-gradient(circle at 35% 30%,#555,#000)}
+.dice-label{margin-top:18px!important;min-height:44px;color:#fff;font:800 28px system-ui;text-shadow:0 2px 8px #000}.dice-label.pop{animation:biteTxt2 .45s both;color:#ffd24a;font-size:36px}
+@keyframes biteTxt2{0%{transform:scale(.3)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+.dbtn{margin-top:12px;font:900 22px system-ui;padding:12px 30px;border:0;border-radius:14px;background:#ffc857;color:#201800;cursor:pointer;box-shadow:0 5px 0 #a8791c;animation:btnPulse 1s ease-in-out infinite}
+@keyframes btnPulse{50%{transform:scale(1.07)}}
+.dsh{width:120px;height:20px;margin:26px auto 0;border-radius:50%;background:rgba(0,0,0,.5);filter:blur(5px)}
+.dsh.go{animation:dshad 1.35s ease-out both}
+@keyframes dshad{0%{transform:scale(1.2);opacity:.2}30%{transform:scale(.45);opacity:.2}55%{transform:scale(1.05);opacity:.55}70%{transform:scale(.75)}85%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+/* Onboarding */
+.ob-steps{list-style:none;display:flex;justify-content:center;gap:10px;margin:0 auto 16px;padding:0;flex-wrap:wrap}
+.ob-steps li{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:99px;background:rgba(255,255,255,.1);color:#b9c9cc;font:600 13px var(--sans)}
+.ob-steps li b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:12px}
+.ob-steps li.on{background:#d4a84f;color:#1a1200}.ob-steps li.on b{background:#1a1200;color:#fff}
+.ob-steps li.done{background:#2e9a6a;color:#fff}.ob-steps li.done b{font-size:0}.ob-steps li.done b::before{content:"\2713";font-size:13px}
+.ob-hero,.ob-how,.ob-card{max-width:980px;margin-left:auto;margin-right:auto}
+.ob-card{max-width:760px}
+.ob-cta{margin-top:22px;padding:14px 30px;font-size:17px;background:#d4a84f;color:#1a1200;position:relative}
+.ob-cta:hover{background:#e0bd72}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px}
+.ob-grid .wide{grid-column:1/-1}
+.ob-card input[type=text],.ob-card input[type=email],.ob-card input[type=number],.ob-card select{width:100%;padding:12px;border:1.5px solid #9fb0b3;border-radius:8px;font:inherit;font-size:16px;color:#1c2b30;background:#fff;min-height:46px}
+.fe{color:#b23b3b;font-size:13px;font-weight:600;margin:4px 0 0}.fe:empty{display:none}
+.ob-check{display:flex;gap:10px;align-items:flex-start;font-weight:400!important;margin-top:16px!important;line-height:1.45}
+.ob-check input{margin-top:3px;width:20px;height:20px;flex:none}
+.ob-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.ob-actions .ob-go{flex:1 1 220px;padding:14px 22px;font-size:16px}
+
+/* Laptop Layout Optimization */
+@media(min-width:901px){
+ main{padding:5px 10px 5px!important}
+ .game-shell{padding:4px!important;border-width:0!important;border-radius:12px!important;gap:12px!important;grid-template-columns:minmax(0,1fr) clamp(340px,30vw,420px)!important}
+ .ludo-board-shell{padding:5px!important;border-bottom-width:4px!important;width:min(100%,calc(100dvh - 82px))!important}
+ .ludo-side{max-height:calc(100dvh - 76px)!important;top:0!important}
+ body:has(.game-shell) footer{position:fixed;right:10px;bottom:2px;padding:2px 8px!important;font-size:10px!important;background:rgba(7,29,38,.78);border-radius:6px;z-index:30;opacity:.8}
+ .top{height:56px!important;padding:0 22px!important;gap:16px!important}
+ .brand{min-width:0!important;gap:12px!important}
+ .brand-cfo{font-size:27px!important}.brand-cfo .crown{top:-9px!important;font-size:14px!important}
+ .brand-divider{height:34px!important}
+ .brand-title strong{font-size:20px!important}
+ .brand-title div{margin-top:5px!important;font-size:9px!important}
+ .header-center{display:none!important}
+ .board-heading{display:none!important}
+}
+@media(max-width:900px){
+ .game-shell{grid-template-columns:minmax(0,1fr)!important;gap:14px;padding:10px}
+ .board-column{order:2;min-width:0}
+ .ludo-side{order:1;position:static!important;max-height:none!important;overflow:visible!important;width:100%}
+ .game-status{grid-template-columns:repeat(4,1fr)}
+}
+</style></head><body>
+<header class="top">
+  <div class="brand">
+    <div class="brand-cfo"><span class="crown">♛</span><span>CFO</span></div>
+    <div class="brand-divider"></div>
+    <div class="brand-title"><strong>Leadership Journey</strong><div>STRATEGY <i>·</i> PEOPLE <i>·</i> FINANCE <i>·</i> IMPACT</div></div>
+  </div>
+  <div class="header-center">Every decision moves you closer<br>to the top.</div>
+  <div class="hdr-r"><span id="stage"></span><span class="welcome-user"><span class="user-icon">●</span><span id="welcomeName">Welcome, Executive</span></span><button id="snd" type="button">Sound on</button><button id="calm" type="button" aria-pressed="false">Calm mode: off</button></div>
+</header><div class="stepbar" id="steps"></div>
+<main id="app"></main>
+<footer>Responses are recorded for research purposes. <a href="#admin" id="adm">Researcher view</a> · <a href="#" id="lnk">Link Excel</a> · <a href="#" id="gsheet">Google Sheet Settings</a><span id="lst"></span></footer>
+<script>
+/* =========================================================================
+   SETTINGS & GOOGLE SHEET INTEGRATION
+   ========================================================================= */
+// You can paste your deployed Google Apps Script Web App URL below:
+let SHEET_URL = localStorage.getItem('cfo_sheet_url') || "";
+
+const LV=[["IQ & Analytical Rigor","Analytical Rigor"],["EQ & People Leadership","People Leadership"],["Decision-Making & Strategy","Strategic Finance"],["Ethics & Integrity","Integrity & Ethics"]];
+const ARCH={
+guardian:["The Guardian","Integrity focus","Automatically removes one wrong answer block in every Ethics question.","Cost: your ball travels 25% faster, so it is harder to aim.","#1f6f78"],
+forecaster:["The Forecaster","Analytical focus","Starts each level with an Oracle Pop that removes one wrong answer block.","Cost: 0.8x board points.","#2f5f95"],
+people:["The People Leader","People focus","Regains +5% focus after clearing a level on the first attempt.","Cost: shorter aim guide.","#6f4d9c"],
+dealmaker:["The Dealmaker","Strategy focus","Earns 1.5x board points for every correct answer.","Cost: wrong answers cost 15%, not 10%.","#a9822f"]};
+
+const LIKERT=["Strongly disagree","Disagree","Somewhat disagree","Neutral","Somewhat agree","Agree","Strongly agree"];
+const LEVEL_BLURB=["Numbers don't lie, but they can mislead. Show how carefully you think.","A CFO leads people, not just spreadsheets. Show how you handle teammates.","Tough calls under pressure. Show how you decide and take ownership.","Final test: what you do when no one is watching. Show your integrity."];
+const ARCHE=[["The Analyst","You think in evidence. Numbers, assumptions and risk are your home ground."],["The People Leader","You read people well and keep teams steady under pressure."],["The Strategist","You make firm, long-term decisions and own the results."],["The Guardian","Your integrity is your strongest asset. People can trust your word."]];
+
+// 20 Questions (5 per level)
+const Q=[[
+["Recheck under pressure","Even when a deadline is close, I recheck my calculations instead of submitting quickly."],
+["Weak data, popular view","When a popular opinion is backed by weak data, I say so, even if the whole class disagrees."],
+["Risk and return","I judge an investment or purchase by its risk and long-term return, not just its first-year benefit."],
+["Own assumptions first","I question my own assumptions before I question other people's."],
+["Conflicting numbers","When two sources give conflicting numbers, I trace both back to their origin before I trust either."]],[
+["Honest feedback","I can give a close friend honest, negative feedback without damaging the friendship."],
+["Credit taken","When a teammate takes credit for my work, I address it calmly instead of staying silent or reacting angrily."],
+["Steady tone","When I am the most stressed person in the room, I still manage my tone so the team stays steady."],
+["Working with a rival","I can work well with someone I personally dislike if the team needs it."],
+["Removing a weak performer","When I must remove a weak performer from a team, I do it respectfully and explain my reasons."]],[
+["Long-term plan","I would turn down an exciting opportunity if it conflicted with my long-term plan."],
+["Owning a failure","I take responsibility for a group decision that failed, even if it was not entirely my idea."],
+["Unpopular decision","When I lead, I am willing to make an unpopular decision if it is right for the team's goal."],
+["Letting go","I abandon a project I have worked on for months once I see it will not succeed."],
+["Fair distribution","When resources are limited, I fairly distribute them by priority instead of by who asks the loudest."]],[
+["Bending the truth","I would not bend the truth to win a competition or secure an internship, even if others do."],
+["Adjusting figures","If a respected senior asked me to adjust figures in a club report, I would refuse and escalate."],
+["A friend's dishonesty","I would report a friend's serious dishonesty, even if it ended our friendship."],
+["Unearned credit","I would return unearned credit or reward even when no one would ever find out."],
+["Honesty has a cost","I stay honest in a situation where honesty will clearly cost me something."]]];
+
+/* ===== HELPERS ===== */
+const $=(s,e=document)=>e.querySelector(s),app=$('#app'),stg=$('#stage');
+const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const mean=a=>a.length?+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let R={},G;
+const STEPS=['Register','Survey game','Questions','Snakes & Ladders','Report'];
+function steps(s){const r=/Researcher/.test(s),i=/Registration/.test(s)?0:/Snakes & Ladders/.test(s)?1:/Question/.test(s)?2:/Final/.test(s)?4:1;$('#steps').innerHTML=r?'':STEPS.map((n,k)=>`<span class="st ${k<i?'done':k==i?'on':''}">${k+1}. ${n}</span>`).join('')}
+
+let MUTE=false,AC;
+function sfx2(n){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();
+ const q={...Object.fromEntries([1,2,3,4,5,6,7].map(n=>['r'+n,[[260+n*85,.14,0,'triangle',.06],[520+n*170,.08,.05,'sine',.025]]])),level:[[523,.14,0],[659,.14,.13],[784,.14,.26],[1047,.34,.39]],streak:[[880,.08,0],[1100,.08,.08],[1320,.18,.16]],step:[[420,.04,0,'triangle',.03]],chomp:[[110,.22,0,'square',.12],[70,.3,.05,'sawtooth',.1],[200,.08,0,'square',.08]],slide:[[900,.09,0,'sine',.07],[760,.09,.08,'sine',.07],[620,.09,.16,'sine',.07],[480,.09,.24,'sine',.07],[340,.12,.32,'sine',.07],[220,.25,.42,'sawtooth',.05]],climb:[[392,.09,0,'triangle',.07],[494,.09,.09,'triangle',.07],[587,.09,.18,'triangle',.07],[784,.09,.27,'triangle',.07],[988,.2,.36,'triangle',.08]],chip:[[1400,.05,0,'square',.03],[1000,.05,.04,'square',.03]],win:[[660,.12,0],[880,.12,.1],[1100,.2,.2]],lose:[[330,.2,0],[220,.3,.16]],gem:[[1200,.1,0],[1600,.12,.06],[2000,.14,.12]],coin:[[1300,.07,0],[1800,.14,.07]]}[n]||[];
+ q.forEach(([f,d,t,ty,v])=>{const o=AC.createOscillator(),g=AC.createGain(),T=AC.currentTime+t;o.type=ty||'triangle';o.frequency.setValueAtTime(f,T);g.gain.setValueAtTime(v||.05,T);g.gain.exponentialRampToValueAtTime(.0001,T+d);o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+d)})}catch(e){}}
+$('#snd').onclick=()=>{MUTE=!MUTE;$('#snd').textContent=MUTE?'Sound off':'Sound on'};
+(function(){const b=$('#calm'),mq=matchMedia('(prefers-reduced-motion:reduce)'),set=on=>{document.body.classList.toggle('calm',on);b.setAttribute('aria-pressed',on);b.textContent='Calm mode: '+(on?'on':'off')};set(mq.matches);b.onclick=()=>set(!document.body.classList.contains('calm'))})();
+function view(h,s){app.innerHTML=h;stg.textContent=s||'';steps(s||'');const wn=$('#welcomeName');if(wn)wn.textContent='Welcome, '+(R.name||'Executive');unmodal();window.scrollTo(0,0)}
+function modal(h){let m=$('#md');if(!m){m=document.createElement('div');m.id='md';document.body.appendChild(m)}m.innerHTML='<div class="mbox">'+h+'</div>';m.style.display='flex'}
+function unmodal(){const m=$('#md');if(m)m.style.display='none'}
+const load=()=>{try{return JSON.parse(localStorage.getItem('cfo_results')||'[]')}catch(e){return[]}};
+
+/* ===== GOOGLE SHEET SAVING ===== */
+function saveFb(id,v,cm){
+  const d=load(),x=[...d].reverse().find(z=>z.row.RespondentID===id);
+  if(x){x.row.Survey_NPS=v;x.row.Survey_Comment=cm;try{localStorage.setItem('cfo_results',JSON.stringify(d))}catch(e){}}
+  if(SHEET_URL){
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({feedback:{RespondentID:id,Survey_NPS:v,Survey_Comment:cm}})}).catch(()=>{});
+  }
+}
+function save(rec){
+  const d=load();d.push(rec);try{localStorage.setItem('cfo_results',JSON.stringify(d))}catch(e){}
+  sendSheet(rec);
+}
+function sendSheet(rec){
+  if(!SHEET_URL)return;
+  fetch(SHEET_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(rec)
+  }).catch(()=>{
+    try{const q=JSON.parse(localStorage.getItem('cfo_pending')||'[]');q.push(rec);localStorage.setItem('cfo_pending',JSON.stringify(q))}catch(e){}
+  });
+}
+function flushPending(){if(!SHEET_URL)return;try{const q=JSON.parse(localStorage.getItem('cfo_pending')||'[]');if(!q.length)return;localStorage.setItem('cfo_pending','[]');q.forEach(sendSheet)}catch(e){}}
+addEventListener('online',flushPending);setTimeout(flushPending,2000);
+
+/* Quick Modal for Configuring Google Sheet Web App URL */
+function configGoogleSheet(){
+  modal(`<h2>Google Sheet Connection</h2>
+  <p class="mut">Connect your Google Sheet web-app URL to save each respondent's answers into 20 clean columns and email the report daily at EOD to <b>mmsbf26015@stu.xim.edu.in</b>.</p>
+  <label for="gsUrlInput">Google Apps Script Web App URL:</label>
+  <input type="text" id="gsUrlInput" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(SHEET_URL)}">
+  <p class="mut" style="font-size:12px;margin-top:6px;">Follow the instructions in <code>GoogleAppsScript.gs</code> in this project to deploy your Google Apps Script.</p>
+  <p id="gsStatus" style="font-weight:bold;"></p>
+  <div style="margin-top:16px;">
+    <button type="button" id="saveGsUrl">Save URL</button>
+    <button type="button" class="alt" id="testGsUrl">Test Connection</button>
+    <button type="button" class="alt" onclick="unmodal()">Close</button>
+  </div>`);
+  $('#saveGsUrl').onclick=()=>{
+    SHEET_URL=$('#gsUrlInput').value.trim();
+    localStorage.setItem('cfo_sheet_url',SHEET_URL);
+    $('#gsStatus').className='good';
+    $('#gsStatus').textContent='✔ Google Sheet URL saved successfully!';
+    flushPending();
+  };
+  $('#testGsUrl').onclick=()=>{
+    const url=$('#gsUrlInput').value.trim();
+    if(!url){$('#gsStatus').className='bad';$('#gsStatus').textContent='Please enter a valid URL first.';return}
+    $('#gsStatus').className='mut';
+    $('#gsStatus').textContent='Pinging Google Sheet Web App...';
+    fetch(url,{method:'GET',mode:'no-cors'}).then(()=>{
+      $('#gsStatus').className='good';
+      $('#gsStatus').textContent='✔ Connected successfully to Web App!';
+    }).catch(err=>{
+      $('#gsStatus').className='bad';
+      $('#gsStatus').textContent='Error connecting: '+err;
+    });
+  };
+}
+$('#gsheet').onclick=e=>{e.preventDefault();configGoogleSheet()};
+
+/* ===== AUTO EXCEL RECORDING ===== */
+let XH=null;
+const xlStatus=t=>{const e=document.getElementById('lst');if(e)e.textContent=t};
+async function linkExcel(){
+ if(!window.showSaveFilePicker){alert('This browser cannot link a file. Use Chrome or Edge.');return}
+ try{XH=await showSaveFilePicker({suggestedName:'cfo_survey_results.xlsx',types:[{description:'Excel workbook',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx']}}]});xlStatus(' ✔ Auto-saving to '+XH.name)}catch(e){}}
+async function writeLinked(rec){
+ const f=await XH.getFile();let rows=[],ans=[];
+ if(f.size){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});rows=wb.Sheets.Respondents?XLSX.utils.sheet_to_json(wb.Sheets.Respondents):[];ans=wb.Sheets.Answers?XLSX.utils.sheet_to_json(wb.Sheets.Answers):[]}
+ rows.push(rec.row);ans.push(...rec.answers);
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Respondents');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(ans),'Answers');
+ const w=await XH.createWritable();await w.write(XLSX.write(wb,{bookType:'xlsx',type:'array'}));await w.close();return rows.length}
+async function autoExcel(rec){
+ let m;
+ try{if(typeof XLSX==='undefined')throw 0;
+  if(XH){const n=await writeLinked(rec);m='✔ Your results were added to the Excel file automatically (respondent #'+n+').'}
+  else{xl([rec],'cfo_'+(rec.row.Name||'respondent').replace(/\W+/g,'_')+'_'+rec.row.RespondentID+'.xlsx');m='✔ Your results were saved automatically as an Excel file in your Downloads folder.'}
+ }catch(e){m='⚠ Automatic Excel save failed. Use "Download my results (Excel)" on the next screen.'}
+ const p=document.createElement('p');p.className=m[0]==='✔'?'good':'bad';p.textContent=m;app.appendChild(p)}
+
+/* ===== ONBOARDING ===== */
+const OB_STEPS=['Welcome','Your details','Play'];
+const obSteps=n=>`<ol class="ob-steps" aria-label="Progress"><li class="${n>1?'done':'on'}" ${n===1?'aria-current="step"':''}><b>1</b><span>${OB_STEPS[0]}</span></li><li class="${n>2?'done':n===2?'on':''}" ${n===2?'aria-current="step"':''}><b>2</b><span>${OB_STEPS[1]}</span></li><li class="${n===3?'on':''}"><b>3</b><span>${OB_STEPS[2]}</span></li></ol>`;
+const ageGroup=a=>a<18?'Under 18':a<=24?'18–24':a<=34?'25–34':a<=44?'35–44':'45 and above';
+
+function home(){R={t0:Date.now()};obIntro()}
+function obIntro(){
+view(`${obSteps(1)}
+<section class="hero ob-hero">
+<span class="kick">Executive assessment</span><h1>Climb the ladder. Earn the corner office.</h1>
+<p class="lead">Race a rival to become CFO in a board game of snakes and ladders. Every turn you rate a statement about how you analyse, lead, decide and act with integrity. Your honest answers build your leadership profile and feed a research survey.</p>
+<div class="feats"><div><b>20 statements</b>4 levels, 5 each</div><div><b>About 10 min</b>Play at your own pace</div><div><b>No wrong answers</b>Your ratings add a move bonus</div></div>
+<button type="button" class="ob-cta" id="obGo">Let’s begin →</button></section>
+<section class="card ob-how"><h2>How it works</h2>
+<div class="rule-cards"><div><span>①</span><b>Rate</b><small>Rate a statement from 1 to 7</small></div><div><span>②</span><b>Roll</b><small>Roll the dice to move</small></div><div><span>🐍🪜</span><b>Climb &amp; slide</b><small>Ladders lift, snakes bite</small></div><div><span>👑</span><b>Win</b><small>First to square 100 is hired</small></div></div>
+<details class="rules"><summary><b>📘 Full game rules</b></summary>${RULES_HTML}</details></section>`,'Registration');
+$('#obGo').onclick=obForm;$('#obGo').focus({preventScroll:true})}
+
+const FIELDS=[['nm','nm-e'],['age','age-e'],['em','em-e'],['gd','gd-e'],['st','st-e'],['ck','ck-e']];
+function obRead(){const g=id=>{const e=$('#'+id);return e?e.value.trim():''};return{name:g('nm'),age:g('age'),email:g('em'),gender:g('gd'),status:g('st'),consent:!!($('#ck')&&$('#ck').checked)}}
+function obForm(){
+ const v=R.form||{},opt=(val,lab,cur)=>`<option value="${val}"${cur===val?' selected':''}>${lab}</option>`;
+ view(`${obSteps(2)}
+<section class="card ob-card"><h2>Tell us about you</h2><p class="mut">Five quick details, then the game starts. Your answers are stored for research and your results report.</p>
+<form id="obf" novalidate>
+<div class="ob-grid">
+<div class="wide"><label for="nm">Full name</label><input type="text" id="nm" autocomplete="name" aria-describedby="nm-e" value="${esc(v.name||'')}"><p class="fe" id="nm-e" role="alert"></p></div>
+<div><label for="age">Age</label><input type="number" id="age" inputmode="numeric" min="15" max="99" step="1" autocomplete="off" aria-describedby="age-e" value="${esc(v.age||'')}"><p class="fe" id="age-e" role="alert"></p></div>
+<div><label for="gd">Gender</label><select id="gd" aria-describedby="gd-e">${opt('','Select…',v.gender||'')}${opt('Male','Male',v.gender)}${opt('Female','Female',v.gender)}</select><p class="fe" id="gd-e" role="alert"></p></div>
+<div class="wide"><label for="em">Email</label><input type="email" id="em" inputmode="email" autocomplete="email" aria-describedby="em-e" value="${esc(v.email||'')}"><p class="fe" id="em-e" role="alert"></p></div>
+<div class="wide"><label for="st">Current status</label><select id="st" aria-describedby="st-e">${opt('','Select…',v.status||'')}${opt('Working','Working',v.status)}${opt('UG','UG (Undergraduate)',v.status)}${opt('PG','PG (Postgraduate)',v.status)}</select><p class="fe" id="st-e" role="alert"></p></div>
+</div>
+<label class="ob-check"><input type="checkbox" id="ck" aria-describedby="ck-e"${v.consent?' checked':''}><span>I agree that my details and answers may be stored and analysed for this survey.</span></label><p class="fe" id="ck-e" role="alert"></p>
+<p class="fe" id="obErr" role="alert"></p>
+<div class="ob-actions"><button type="button" class="alt" id="obBack">← Back</button><button type="button" class="ob-go" id="obStart">Start Survey &amp; Game</button></div>
+</form></section>`,'Registration');
+ $('#obBack').onclick=()=>{R.form=obRead();obIntro()};
+ const go=()=>{
+  const f=obRead(),age=Number(f.age),err={};
+  if(f.name.length<2)err.nm='Please enter your full name.';
+  if(f.age===''||!Number.isInteger(age)||age<15||age>99)err.age='Enter a whole-number age between 15 and 99.';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email))err.em='Enter a valid email, like name@example.com.';
+  if(!f.gender)err.gd='Please choose one option.';
+  if(!f.status)err.st='Please choose Working, UG or PG.';
+  if(!f.consent)err.ck='Please tick the consent box to continue.';
+  const idOf={nm:'nm',age:'age',em:'em',gd:'gd',st:'st',ck:'ck'};let first=null;
+  FIELDS.forEach(([k,ek])=>{$('#'+ek).textContent=err[k]||'';const el=$('#'+idOf[k]);if(err[k]){el.setAttribute('aria-invalid','true');first=first||el}else el.removeAttribute('aria-invalid')});
+  R.form=f;
+  $('#obErr').textContent=first?'Some details are missing or need fixing. Please check the fields marked in red.':'';
+  if(first){first.focus();return}
+  R.name=f.name;R.email=f.email;R.ageNum=age;R.age=ageGroup(age);R.gender=f.gender;R.status=f.status;
+  R.id=R.id||'R'+Date.now().toString(36).toUpperCase();
+  $('#obStart').disabled=true;
+  try{startLudo()}catch(x){const b=$('#obStart'),m=$('#obErr');if(b)b.disabled=false;if(m)m.textContent='Could not start the game. Please try again.';console.error(x)}};
+ $('#obStart').onclick=go;
+ $('#obf').onsubmit=e=>{e.preventDefault();go()};
+}
+
+/* ===== GAME RULES & LUDO ===== */
+const RULES_HTML=`<div class="hl"><b>🎯 Goal:</b> be the <b>first to reach square 100</b> (the 👑 CFO's Office). Whoever gets there first, you or Alex, is hired as CFO.</div>
+<h3>🔁 Each turn</h3><ul><li><b>1.</b> A leadership statement appears. Rate it from <b>1 (Strongly disagree)</b> to <b>7 (Strongly agree)</b>. Click, or press keys 1 to 7.</li><li><b>2.</b> Tap the 🎲 dice to roll. You move the number you roll plus your rating bonus.</li><li><b>3.</b> Alex, your rival, takes a turn.</li></ul>
+<h3>📝 The statements</h3><ul><li>There are <b>20 statements</b> in 4 levels of 5. Answer honestly: ratings populate your research profile.</li><li><b>Fairness limit:</b> you may give a 7 on at most 4 statements and a 6 on at most 6 statements.</li></ul>
+<h3>🗺️ Special squares</h3><ul><li>🪜 <b>Ladders</b> carry you up. 🐍 <b>Snakes</b> bite and slide you down.</li><li>⚔️ <b>Finance Challenge:</b> a 10-second finance question (correct answer moves you 3 bonus squares).</li><li>✨ <b>Power-up:</b> gives you a random power card.</li></ul>`;
+
+const LUDO_SNAKES={62:19,47:26,16:6,87:24,32:8,57:18,33:7,30:9,67:46};
+const LUDO_LADDERS={80:96,71:91,31:68,50:92,77:96,79:98,21:61,76:94,69:93};
+const CHAL=[15,27,43,53,65,78,95],PWR=[10,25,48,58,63,73,97];
+
+function ludoAllQuestions(){
+  return Q.flatMap((levelQuestions,li)=>levelQuestions.map((q,qi)=>({level:li+1,qid:li*5+qi+1,skill:LV[li][1],title:q[0],scenario:q[1],options:LIKERT})));
+}
+
+function boardPath(pos){
+  pos=Math.max(1,Math.min(100,pos));
+  const row=Math.floor((pos-1)/10);
+  const colInRow=(pos-1)%10;
+  const col=row%2===0?colInRow:9-colInRow;
+  return {x:(col+.5)*10,y:(9-row+.5)*10};
+}
+
+function renderLudoBoard(){
+ const cells=[];
+ for(let row=9;row>=0;row--){
+   const leftToRight=(row%2===0);
+   for(let c=0;c<10;c++){
+     const pos=leftToRight?row*10+c+1:row*10+(10-c);
+     const isLadder=Object.prototype.hasOwnProperty.call(LUDO_LADDERS,pos);
+     const isSnake=Object.prototype.hasOwnProperty.call(LUDO_SNAKES,pos),isC=CHAL.includes(pos),isP=PWR.includes(pos);
+     const cls='ludo-cell'+(pos===1?' start':'')+(pos===100?' finish':'')+(isLadder?' ladder-start':'')+(isSnake?' snake-start':'')+(isC?' chal':'')+(isP?' pwr':'');
+     const mark=isLadder?'<span class="cell-mark">↗</span>':isSnake?'<span class="cell-mark">↘</span>':isC?'<span class="cell-mark">⚔️</span>':isP?'<span class="cell-mark">✨</span>':'';
+     const special=pos===1?'<span class="start-mark">START</span>':pos===100?'<span class="finish-mark">👑 HOME</span>':'';
+     cells.push(`<div class="${cls}" data-pos="${pos}"><span class="cell-num">${pos}</span>${mark}${special}</div>`);
+   }
+ }
+ let svg=`<svg class="ludo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">`;
+ Object.entries(LUDO_LADDERS).forEach(([a,b])=>{
+   const p1=boardPath(+a),p2=boardPath(+b);
+   svg+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="ladder"/>`;
+ });
+ Object.entries(LUDO_SNAKES).forEach(([a,b])=>{
+   const p1=boardPath(+a),p2=boardPath(+b);
+   svg+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="snake"/>`;
+ });
+ svg+='</svg>';
+ return `<div class="ludo-board-shell"><div class="ludo-board" id="ludoBoard"><div class="ludo-grid">${cells.join('')}</div>${svg}
+   <div class="token user" id="userToken" style="background:#1f6f78">YOU</div><div class="token bot" id="botToken" style="background:#b23b3b">ALEX</div></div><div class="dice-tray"><div class="die" id="dieFace"></div><div class="die-cap" id="dieCap">Answer to move</div></div></div>`;
+}
+
+function setToken(id,pos,offset){
+ const t=$(id); if(!t)return;
+ const p=boardPath(pos);
+ t.style.left=(p.x+offset.x)+'%';t.style.top=(p.y+offset.y)+'%';
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+const OFF={user:{x:-2.2,y:1.8},bot:{x:2.2,y:-1.8}},TID={user:'#userToken',bot:'#botToken'};
+const say=h=>{const e=$('#moveLog');if(e)e.innerHTML=h};
+const who=w=>w==='user'?'You':'Alex';
+function panel(label,title,text,prompt){$('#chLabel').textContent=label;$('#lqTitle').textContent=title;$('#lqScenario').textContent=text;$('#qPrompt').style.display=prompt?'':'none';$('#ludoOptions').innerHTML='';$('#ludoOptions').classList.remove('cards','scale7');ludoHud()}
+function ask(html){return new Promise(res=>{const o=$('#ludoOptions');o.classList.remove('cards','scale7');o.innerHTML=html;o.querySelectorAll('button').forEach(b=>b.onclick=()=>res(b.dataset.a))})}
+
+function ludoHud(){
+ const set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+ set('#userSq',G.user.pos);set('#botSq',G.bot.pos);
+ set('#userPosSide',G.user.pos);set('#botPosSide',G.bot.pos);set('#turnCount',G.turn);set('#qCountSide',Math.min(G.qi+1,G.qs.length)+' of '+G.qs.length);
+ const p=$('#qProgress');if(p)p.style.width=(G.qi/G.qs.length*100)+'%';
+}
+
+function showDie(n,who,tot){const d=$('#dieFace');if(!d)return;
+ const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[n]||[];
+ d.innerHTML=Array.from({length:9},(_,i)=>`<i class="${P.includes(i)?'on':''}"></i>`).join('');
+ if(who){const c=$('#dieCap');if(c)c.textContent=who+' moved '+(tot||n)+' space'+((tot||n)==1?'':'s');d.classList.remove('roll');void d.offsetWidth;d.classList.add('roll')}}
+
+async function rollDice(n,who,ask){
+ const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]},R={1:[0,0],6:[0,180],3:[0,-90],4:[0,90],2:[-90,0],5:[90,0]};
+ const ov=document.createElement('div');ov.className='dice-ov';
+ ov.innerHTML=`<div class="dice-stage"><div class="toss idle" id="toss"><div class="cube" id="cube" style="transform:rotateX(25deg) rotateY(25deg)">${[1,2,3,4,5,6].map(k=>`<div class="dface" style="transform:translateZ(70px)">${Array.from({length:9},(_,i)=>`<i class="${P[k].includes(i)?'on':''}"></i>`).join('')}</div>`).join('')}</div></div><div class="dsh"></div><div class="dice-label" id="dLab">${ask?'Tap the dice to roll!':who+' rolls…'}</div>${ask?'<button id="dBtn" class="dbtn">🎲 Roll!</button>':''}</div>`;
+ document.body.appendChild(ov);void ov.offsetWidth;
+ const c=ov.querySelector('#cube'),tz=ov.querySelector('#toss'),l=ov.querySelector('#dLab');
+ if(ask){await new Promise(r=>{function kd(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();go()}}function go(){document.removeEventListener('keydown',kd);r()}document.addEventListener('keydown',kd);c.onclick=go;ov.querySelector('#dBtn').onclick=go});ov.querySelector('#dBtn').remove()}
+ tz.classList.remove('idle');tz.classList.add('toss');
+ const [ax,ay]=R[n];c.style.transform=`rotateX(${ax-720}deg) rotateY(${ay+1080}deg)`;
+ await sleep(1200);
+ l.textContent=(who==='You'?'You rolled ':who+' rolled ')+n+'!';
+ await sleep(900);ov.remove();
+}
+
+function startLudo(){
+ G={mode:'ludo',qs:ludoAllQuestions(),qi:0,user:{pos:1},bot:{pos:1},hand:[],armed:{},snap:null,turn:1,answers:[],over:false,winner:null,score:0,correct:0,incorrect:0,t0:Date.now()};
+ renderLudo();
+ setToken('#userToken',1,OFF.user);setToken('#botToken',1,OFF.bot);ludoHud();showDie(5);
+ gameLoop();
+}
+
+function renderLudo(){
+  view(`<div class="game-shell">
+    <section class="board-column">
+      <div class="board-heading"><div><span class="game-kicker">CFO LEADERSHIP JOURNEY</span><h1>Snakes &amp; Ladders</h1></div></div>
+      ${renderLudoBoard()}
+    </section>
+    <aside class="ludo-side professional-side">
+      <div class="players-panel">
+        <div class="player-card active">
+          <div class="avatar avatar-you">●</div>
+          <div class="player-info"><strong>You</strong><span>${esc(R.name)}</span><small>Square <b id="userSq">1</b> of 100</small></div>
+        </div>
+        <div class="player-card">
+          <div class="avatar avatar-bot">●</div>
+          <div class="player-info"><strong>Alex</strong><span>AI Opponent</span><small>Square <b id="botSq">1</b> of 100</small></div>
+        </div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-head"><span class="challenge-icon">⚔</span><div><span id="chLabel">YOUR TURN</span><small id="squareLabel">Square 1</small></div></div>
+        <h2 id="lqTitle"></h2>
+        <p id="lqScenario"></p>
+        <div class="challenge-rule"></div>
+        <div class="question-prompt" id="qPrompt" style="display:none">How much do you agree with this statement?</div>
+        <div class="ludo-options" id="ludoOptions"></div>
+        <div class="submit-row"><span id="answerStatus"></span></div>
+      </div>
+      <div class="game-status">
+        <div><span>↻</span><small>Turn</small><b id="turnCount">1</b></div>
+        <div><span>⚄</span><small>Steps</small><b id="diceValue">—</b></div>
+        <div><span>●</span><small>Your Position</small><b id="userPosSide">1</b></div>
+        <div><span>●</span><small>Alex Position</small><b id="botPosSide">1</b></div>
+      </div>
+      <div class="board-legend"><span class="lg l-lad"><i>↗</i>Ladder up</span><span class="lg l-snk"><i>↘</i>Snake down</span><span class="lg l-chal"><i>⚔️</i>Challenge</span><span class="lg l-pwr"><i>✨</i>Power-Up</span></div>
+      <div class="side-footer"><span>Question <b id="qCountSide">1 of 20</b></span><div class="progress-mini"><i id="qProgress"></i></div><div id="moveLog">Rate the statement from 1 to 7.</div></div>
+    </aside>
+  </div>`,`Game 2: Ludo Survey`);
+}
+
+const CAP={7:4,6:6};
+function capLeft(n){const used=(G.answers||[]).filter(a=>a.kind==='turn'&&a.rating===n).length;return CAP[n]==null?null:Math.max(0,CAP[n]-used)}
+
+function askCards(q){
+ return new Promise(res=>{
+  const o=$('#ludoOptions');o.classList.add('scale7');let done=false;
+  o.innerHTML=LIKERT.map((t,n)=>{const L=capLeft(n+1),lock=L===0;return `<button class="ludo-opt likert${L!=null?' capped':''}" data-a="${n+1}" ${lock?'disabled':''} title="${esc(t)}"><b>${n+1}</b>${L!=null?'<small>'+L+' left</small>':''}</button>`}).join('')+'<div class="tmr" id="tmr"><i></i><span></span></div>';
+  const T0=Date.now(),iv=setInterval(()=>{const b=o.querySelector('#tmr');if(!b||done){clearInterval(iv);return}const e=(Date.now()-T0)/1000;b.querySelector('span').textContent='⏱️ Time: '+e.toFixed(0)+'s'},100);
+  o.querySelectorAll('.likert').forEach(c=>c.onclick=()=>{if(done)return;done=true;clearInterval(iv);c.classList.add('sel');o.querySelectorAll('button').forEach(x=>x.disabled=true);sfx2('r'+c.dataset.a);say('Selected: <b>'+c.dataset.a+' \u2013 '+LIKERT[c.dataset.a-1]+'</b>');setTimeout(()=>res({rating:+c.dataset.a,fast:(Date.now()-T0)/1000<=10}),350)});
+ });
+}
+
+async function askQ(q,kind,label){
+ const t0=Date.now();
+ panel(label,q.title,q.scenario,1);
+ const r=await askCards(q);
+ const rating=r.rating,ok=rating>=5;
+ if(ok)G.correct++;else G.incorrect++;
+ G.score+=rating*10;
+ const rec={kind,level:q.level,attempt:1,qid:q.qid,title:q.title,skill:q.skill,statement:q.scenario,rating,text:LIKERT[rating-1],ok:ok?1:0,sec:+((Date.now()-t0)/1000).toFixed(1),square:G.user.pos,fast:r.fast?1:0};
+ G.answers.push(rec);ludoHud();
+ return {ok,rating,rec,q}}
+
+async function walk(w,n){
+ const p=G[w];
+ for(let i=0;i<n&&p.pos<100;i++){
+   p.pos++;
+   if(w==='user')sfx2('step');
+   setToken(TID[w],p.pos,OFF[w]);
+   ludoHud();
+   await sleep(95);
+ }
+}
+
+async function moveBy(w,n){
+ if(G[w].pos>=100)return;
+ await walk(w,n);
+ const s=G[w].pos;
+ if(LUDO_LADDERS[s]){say(`🪜 ${who(w)} climbed a ladder to ${LUDO_LADDERS[s]}.`);sfx2('climb');await sleep(350);G[w].pos=LUDO_LADDERS[s];setToken(TID[w],G[w].pos,OFF[w]);ludoHud()}
+ else if(LUDO_SNAKES[s]){say(`🐍 ${who(w)} slid down a snake to ${LUDO_SNAKES[s]}.`);sfx2('chomp');await sleep(350);G[w].pos=LUDO_SNAKES[s];setToken(TID[w],G[w].pos,OFF[w]);ludoHud()}
+}
+
+async function userTurn(){
+ if(G.qi%5===0&&G.qi<G.qs.length){const li=G.qi/5;panel('NEW LEVEL '+(li+1)+' OF 4',LV[li][0],LEVEL_BLURB[li],0);sfx2('level');say('Level '+(li+1)+' begins. 5 statements to go.');await ask('<button class="ludo-opt" data-a="go"><b>▶</b> Start level '+(li+1)+'</button>')}
+ const q=G.qs[G.qi];
+ const r=await askQ(q,'turn',`QUESTION ${G.qi+1} OF ${G.qs.length} • Square ${G.user.pos}`);
+ G.qi++;
+ let steps=1+rnd(6);
+ panel('YOUR ROLL','Your answer is saved.','Tap the dice (or press Space) to roll.',0);
+ const rb=r.rating>=7?3:r.rating===6?2:r.rating===5?1:0;
+ await rollDice(steps,'You',true);
+ const base=steps;steps+=rb;
+ $('#diceValue').textContent=steps;showDie(base,'You',steps);
+ say(`🎲 Rolled <b>${base}</b> + ${rb} bonus = <b>${steps}</b> spaces!`);
+ await moveBy('user',steps);
+}
+
+async function alexTurn(){
+ panel("ALEX'S TURN",'Alex is moving\u2026','',0);await sleep(600);
+ const n=1+rnd(6);await rollDice(n,'Alex');showDie(n,'Alex',n+1);
+ say(`Alex rolled <b>${n}</b> + 1 benchmark bonus = <b>${n+1}</b> spaces.`);
+ await moveBy('bot',n+1);await sleep(400);
+}
+
+async function winCheck(w){
+ const p=G[w];
+ if(p.pos>=100){
+  p.pos=100;
+  if(!p.done){
+   p.done=true;
+   if(!G.winner){
+    G.winner=w;
+    say('🏆 '+who(w)+" reached square 100 first and secured the CFO title!");
+    sfx2(w==='user'?'win':'lose');
+   }
+  }
+ }
+}
+
+async function gameLoop(){
+ for(G.turn=1;G.turn<=G.qs.length;G.turn++){
+  for(const w of ['user','bot']){
+   ludoHud();
+   if(w==='user')await userTurn();else await alexTurn();
+   await winCheck(w);
+  }
+ }
+ if(!G.winner){
+  G.winner=G.user.pos>=G.bot.pos?'user':'bot';
+ }
+ G.turn=G.qs.length;
+ G.over=true;
+ finishLudo();
+}
+
+/* =========================================================================
+   COMPILING & SAVING 20 QUESTION COLUMNS
+   ========================================================================= */
+function finishLudo(){
+ const W=G.winner==='user'?"You were hired as CFO":G.winner==='bot'?"Alex was hired as CFO":(G.user.pos>=G.bot.pos?'You finished ahead of Alex':'Alex finished ahead of you');
+ const pc=[0,1,2,3].map(l=>{const a=G.answers.filter(x=>x.level===l+1);return a.length?Math.round((a.reduce((t,x)=>t+x.rating,0)/a.length-1)/6*100):null});
+ const acc=G.answers.length?Math.round((G.answers.reduce((t,x)=>t+x.rating,0)/G.answers.length-1)/6*100):0;
+
+ // Compile exact 20 questions into clean dedicated columns
+ const tq=G.answers.filter(a=>a.kind==='turn');
+ const qf={};
+ for(let i=1;i<=20;i++){
+   const found=tq.find(a=>a.qid===i);
+   qf['Q'+i+'_Rating']=found?found.rating:'';
+ }
+
+ const lv=[1,2,3,4].map(l=>{const a=tq.filter(x=>x.level===l);return a.length?+(a.reduce((t,x)=>t+x.rating,0)/a.length).toFixed(2):''});
+
+ const rec={
+   row:{
+     Timestamp:new Date().toISOString(),
+     RespondentID:R.id,
+     Name:R.name,
+     Email:R.email||'',
+     Age:R.ageNum||'',
+     AgeGroup:R.age,
+     Gender:R.gender||'',
+     CurrentStatus:R.status||'',
+     AccuracyPct:acc,
+     Winner:W,
+     UserFinalSquare:G.user.pos,
+     BotFinalSquare:G.bot.pos,
+     TotalRating:tq.reduce((t,x)=>t+x.rating,0),
+     Turns:Math.min(G.turn,G.qs.length),
+     TotalMinutes:+((Date.now()-G.t0)/60000).toFixed(1),
+     ...qf, // Q1_Rating through Q20_Rating
+     L1_AvgRating:lv[0],
+     L2_AvgRating:lv[1],
+     L3_AvgRating:lv[2],
+     L4_AvgRating:lv[3],
+     Survey_NPS:'',
+     Survey_Comment:''
+   },
+   answers:G.answers.map(a=>({...a,RespondentID:R.id,Name:R.name}))
+ };
+
+ G.rec=rec;
+ save(rec);
+ showLudoFeedback(rec,W,pc);
+ autoExcel(rec);
+}
+
+function showLudoFeedback(rec,winner,pc){
+ sfx2('level');
+ const np=`<div class="scale">${[0,1,2,3,4,5,6,7,8,9,10].map(i=>`<label><input type="radio" name="np" value="${i}"><span>${i}</span></label>`).join('')}</div>`;
+ view(`<section class="card">
+   <div class="ludo-result"><h2>Survey board complete</h2><p>${esc(R.name)}, you answered ${G.answers.length} questions.</p><p><b>${winner}</b>. Final positions: You ${G.user.pos}, Alex ${G.bot.pos}.</p></div>
+   <div class="stats"><div class="stat"><b>${rec.row.AccuracyPct}%</b>leadership self-assessment</div><div class="stat"><b>${G.user.pos}</b>Your position</div><div class="stat"><b>${G.bot.pos}</b>Alex position</div></div>
+   <h3>Survey response profile</h3>
+   ${LV.map((l,i)=>`<div class="bar"><span>${l[0]}: <b>${pc[i]==null?"not reached":pc[i]+"%"}</b></span><div><i style="width:${pc[i]||0}%"></i></div></div>`).join('')}
+   <hr>
+   <h3>Feedback (Optional)</h3>
+   <label>How likely are you to recommend this assessment to a colleague? (0 to 10)</label>${np}
+   <label for="cm">Any comments or suggestions?</label><textarea id="cm" rows="3"></textarea>
+   <button id="finishFeedback">See my report</button><button class="alt" id="skipFeedback">Skip</button>
+ </section>`,'Final report: feedback');
+ $('#finishFeedback').onclick=()=>{const c=$('input[name=np]:checked');if(c){rec.row.Survey_NPS=+c.value}rec.row.Survey_Comment=$('#cm').value.trim();saveFb(rec.row.RespondentID,rec.row.Survey_NPS,rec.row.Survey_Comment);showLudoReport(rec,pc,winner)};
+ $('#skipFeedback').onclick=()=>showLudoReport(rec,pc,winner);
+}
+
+function showLudoReport(rec,pc,winner){
+ view(`<section class="card"><h1>Final survey report</h1><p class="mut">${esc(R.name)} (${esc(rec.row.Email)})</p>
+ <div class="ludo-result"><h2>🎲 Game outcome: ${esc(winner)}</h2><p>Final board position — You: ${G.user.pos}; Alex: ${G.bot.pos}.</p></div>
+ <div class="stats"><div class="stat"><b>${rec.row.AccuracyPct}%</b>Overall score</div><div class="stat"><b>${rec.row.Turns}</b>Turns played</div><div class="stat"><b>${rec.row.TotalMinutes}</b>Minutes taken</div></div>
+ <h3>20 Questions Response Breakdown</h3>
+ <div class="scroll">
+   <table>
+     <thead><tr><th>#</th><th>Statement</th><th>Rating</th><th>Scale</th></tr></thead>
+     <tbody>
+       ${G.answers.map((a,i)=>`<tr><td>Q${a.qid}</td><td><b>${esc(a.title)}</b><br><small style="color:#666">${esc(a.statement)}</small></td><td><b>${a.rating}</b> / 7</td><td>${esc(a.text)}</td></tr>`).join('')}
+     </tbody>
+   </table>
+ </div>
+ <p style="margin-top:20px"><b>✔ Your responses have been saved and synced to the research database.</b></p>
+ <button id="dl">Download Excel File</button><button class="alt" id="pr">Print / PDF</button><button class="alt" id="nw">New Respondent</button>
+ </section>`,'Final report');
+ $('#dl').onclick=()=>xl([rec]);$('#pr').onclick=()=>window.print();$('#nw').onclick=home;
+}
+
+function xl(d,fn){if(typeof XLSX==='undefined')return;
+ const wb=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d.map(x=>x.row)),'Respondents');
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d.flatMap(x=>x.answers)),'Answers');
+ XLSX.writeFile(wb,fn||'cfo_survey_results.xlsx');
+}
+
+home();
+</script></body></html>
